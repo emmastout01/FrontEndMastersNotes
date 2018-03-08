@@ -1,3 +1,5 @@
+// Note: This code is the 'answer' section to the pathfinder exercise on FEM course.
+
 const NO_ONE = 0;
 const BY_A = 1;
 const BY_B = 2;
@@ -18,7 +20,7 @@ const findShortestPathLength = (maze, [xA, yA], [xB, yB]) => {
   const queue = [];
 //   What we're trying to do here: We want to transform the data that we're getting (an array of arrays) and pull out useful information. We're saying that we want to get an array of arrays to change into (x, y) coordinates
 // The index that will be represented by x will be the point on the x axis
-// We're returning an object here: 
+// We're returning an object here: showing if the point is closed, etc.
   const visited = maze.map((row, y) =>
     row.map((origin, x) => ({
       closed: origin === 1,
@@ -28,15 +30,20 @@ const findShortestPathLength = (maze, [xA, yA], [xB, yB]) => {
       y
     }))
   );
+
   visited[yA][xA].openedBy = BY_A;
   visited[yB][xB].openedBy = BY_B;
   logMaze(visited);
 
+//   We're putting the origin here. 
   let aQueue = [visited[yA][xA]];
   let bQueue = [visited[yB][xB]];
+//   We need to keep track of the iteration that we're on to note if we're 1 away, 2 away, etc from the origin
   let iteration = 0;
 
   // if one runs out, there's no path
+//   If one of them runs out that means we know it's impossible. So first we need to check that aQueue and bQueue have length.
+
   while (aQueue.length && bQueue.length) {
     iteration++;
     const aNeighbors = aQueue.reduce((acc, neighbor) => acc.concat(getNeighbors(visited, neighbor.x, neighbor.y)), [])
@@ -51,6 +58,9 @@ const findShortestPathLength = (maze, [xA, yA], [xB, yB]) => {
         aQueue.push(neighbor); 
       }
     }
+
+    // Reduce method: Reduces an array of something down to one number (?)
+    // Use reduce when you have an array and want to combine it with other items in the array
 
     const bNeighbors = bQueue.reduce((acc, neighbor) => acc.concat(getNeighbors(visited, neighbor.x, neighbor.y)), [])
     bQueue = [];
